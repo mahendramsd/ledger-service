@@ -45,20 +45,20 @@ public class LedgerServiceImpl implements LedgerService {
         logger.debug("Try To Deposit  {}", ledgerRequest.getAmount());
         if (ledgerRequest.getAmount().compareTo(BigDecimal.ZERO) == 1) {
             // Create credit entry | Customer Account Credit
-            BigDecimal balance = getBalance(ledgerRequest.getCreditAccount()).add(ledgerRequest.getAmount());
-            Ledger ledgerC = generateLedger(ledgerRequest, ledgerRequest.getCreditAccount(), balance, CreditDebitStatus.CREDIT);
-            logger.debug("Add credit entry {}", ledgerRequest.getCreditAccount());
+                BigDecimal balance = getBalance(ledgerRequest.getCustomerAccount()).add(ledgerRequest.getAmount());
+            Ledger ledgerC = generateLedger(ledgerRequest, ledgerRequest.getCustomerAccount(), balance, CreditDebitStatus.CREDIT);
+            logger.debug("Add credit entry {}", ledgerRequest.getCustomerAccount());
             if (ledgerC.getId() > 0L) {
                 // Create Debit entry | Bank caseBook Debit
-                BigDecimal cashBookBalance = getBalance(ledgerRequest.getDebitAccount()).subtract(ledgerRequest.getAmount());
-                Ledger ledgerD = generateLedger(ledgerRequest, ledgerRequest.getDebitAccount(),cashBookBalance, CreditDebitStatus.DEBIT);
-                logger.debug("Add Debit entry {}", ledgerRequest.getDebitAccount());
+                BigDecimal cashBookBalance = getBalance(ledgerRequest.getCashBookAccount()).subtract(ledgerRequest.getAmount());
+                Ledger ledgerD = generateLedger(ledgerRequest, ledgerRequest.getCashBookAccount(),cashBookBalance, CreditDebitStatus.DEBIT);
+                logger.debug("Add Debit entry {}", ledgerRequest.getCashBookAccount());
                 if (ledgerD.getId() > 0L) {
                     DepositResponse depositResponse = new DepositResponse();
                     depositResponse.setAmount(ledgerRequest.getAmount());
                     depositResponse.setMessage(Constants.DEPOSIT_MESSAGE);
-                    depositResponse.setCreditAccount(ledgerRequest.getCreditAccount());
-                    depositResponse.setDebitAccount(ledgerRequest.getDebitAccount());
+                    depositResponse.setCustomerAccount(ledgerRequest.getCustomerAccount());
+                    depositResponse.setCashBookAccount(ledgerRequest.getCashBookAccount());
                     depositResponse.setTransactionNo(ledgerRequest.getTransactionNo());
                     depositResponse.setDate(ledgerRequest.getLedgerDate());
                     depositResponse.setCreatedDate(ledgerD.getCreatedDate());
@@ -79,22 +79,22 @@ public class LedgerServiceImpl implements LedgerService {
     @Override
     public WithdrawResponse withdraw(LedgerRequest ledgerRequest) {
         logger.debug("Try To Withdraw  {}", ledgerRequest.getAmount());
-        if (ledgerRequest.getAmount().compareTo(getBalance(ledgerRequest.getCreditAccount())) == 1) {
-            BigDecimal balance = getBalance(ledgerRequest.getCreditAccount()).add(ledgerRequest.getAmount());
+        if (getBalance(ledgerRequest.getCustomerAccount()).compareTo(ledgerRequest.getAmount()) == 1) {
+            BigDecimal balance = getBalance(ledgerRequest.getCashBookAccount()).add(ledgerRequest.getAmount());
             // Create Credit entry | Bank caseBook Credit
-            Ledger ledgerC = generateLedger(ledgerRequest, ledgerRequest.getCreditAccount(),balance, CreditDebitStatus.CREDIT);
-            logger.debug("Add credit entry {}", ledgerRequest.getCreditAccount());
+            Ledger ledgerC = generateLedger(ledgerRequest, ledgerRequest.getCashBookAccount(),balance, CreditDebitStatus.CREDIT);
+            logger.debug("Add credit entry {}", ledgerRequest.getCashBookAccount());
             if (ledgerC.getId() > 0L) {
-                BigDecimal cashBookBalance = getBalance(ledgerRequest.getDebitAccount()).subtract(ledgerRequest.getAmount());
+                BigDecimal cashBookBalance = getBalance(ledgerRequest.getCustomerAccount()).subtract(ledgerRequest.getAmount());
                 // Create Debit entry | Customer Account Debit
-                Ledger ledgerD = generateLedger(ledgerRequest, ledgerRequest.getDebitAccount(),cashBookBalance, CreditDebitStatus.DEBIT);
-                logger.debug("Add Debit entry {}", ledgerRequest.getCreditAccount());
+                Ledger ledgerD = generateLedger(ledgerRequest, ledgerRequest.getCustomerAccount(),cashBookBalance, CreditDebitStatus.DEBIT);
+                logger.debug("Add Debit entry {}", ledgerRequest.getCustomerAccount());
                 if (ledgerD.getId() > 0L) {
                     WithdrawResponse withdrawResponse = new WithdrawResponse();
                     withdrawResponse.setAmount(ledgerRequest.getAmount());
                     withdrawResponse.setMessage(Constants.WITHDRAW_MESSAGE);
-                    withdrawResponse.setCreditAccount(ledgerRequest.getCreditAccount());
-                    withdrawResponse.setDebitAccount(ledgerRequest.getDebitAccount());
+                    withdrawResponse.setCustomerAccount(ledgerRequest.getCustomerAccount());
+                    withdrawResponse.setCashBookAccount(ledgerRequest.getCashBookAccount());
                     withdrawResponse.setTransactionNo(ledgerRequest.getTransactionNo());
                     withdrawResponse.setDate(ledgerRequest.getLedgerDate());
                     withdrawResponse.setCreatedDate(ledgerD.getCreatedDate());
@@ -123,7 +123,7 @@ public class LedgerServiceImpl implements LedgerService {
      * @param accountNo
      * @return
      */
-    private BigDecimal getBalance(String accountNo) {
+    public BigDecimal getBalance(String accountNo) {
         BigDecimal creditSum = BigDecimal.ZERO;
         BigDecimal debitSum = BigDecimal.ZERO;;
          creditSum = ledgerRepository.findLedgerSum(accountNo,CreditDebitStatus.CREDIT,Status.ACTIVE);
@@ -162,7 +162,7 @@ public class LedgerServiceImpl implements LedgerService {
      * @param accountNo
      * @return
      */
-    private Ledger generateLedger(LedgerRequest ledgerRequest, String accountNo, BigDecimal balance, CreditDebitStatus status) {
+    public Ledger generateLedger(LedgerRequest ledgerRequest, String accountNo, BigDecimal balance, CreditDebitStatus status) {
         Ledger ledger = new Ledger();
         ledger.setAmount(ledgerRequest.getAmount());
         ledger.setDescription(ledgerRequest.getDescription());

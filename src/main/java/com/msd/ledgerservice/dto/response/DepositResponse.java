@@ -14,8 +14,8 @@ import java.util.Date;
 public class DepositResponse implements Serializable {
 
     private String message;
-    private String creditAccount;
-    private String debitAccount;
+    private String customerAccount;
+    private String cashBookAccount;
     private String transactionNo;
     private BigDecimal amount;
     private BigDecimal Balance;

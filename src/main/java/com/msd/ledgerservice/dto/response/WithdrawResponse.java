@@ -13,8 +13,8 @@ import java.util.Date;
 public class WithdrawResponse implements Serializable {
 
     private String message;
-    private String creditAccount;
-    private String debitAccount;
+    private String customerAccount;
+    private String cashBookAccount;
     private BigDecimal amount;
     private String transactionNo;
     private String description;

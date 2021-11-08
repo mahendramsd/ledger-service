@@ -24,7 +24,7 @@ public class LedgerController {
         this.ledgerService = ledgerService;
     }
 
-    @ApiOperation(value = "Deposit for Bank Account | Credit Account - Customer Bank Account, Debit Account - Bank CashBook Account", response = DepositResponse.class)
+    @ApiOperation(value = "Deposit for Bank Account", response = DepositResponse.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Content-Type", value = "application/json", paramType = "header"),
             @ApiImplicitParam(name = "bearer-access-token", value = "Bearer Generated access token",
@@ -40,7 +40,7 @@ public class LedgerController {
         return ResponseEntity.ok(ledgerService.deposit(ledgerRequest));
     }
 
-    @ApiOperation(value = "withdrawal in Bank Account | Credit Account - Bank CashBook Account, Debit Account - Customer Bank Account", response = WithdrawResponse.class)
+    @ApiOperation(value = "Withdrawal in Bank Account | Credit Account - Bank CashBook Account, Debit Account - Customer Bank Account", response = WithdrawResponse.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Content-Type", value = "application/json", paramType = "header"),
             @ApiImplicitParam(name = "bearer-access-token", value = "Bearer Generated access token",
@@ -68,7 +68,7 @@ public class LedgerController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     @GetMapping("/balance")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<BalanceResponse> withdraw(@RequestParam("accountNo") String accountNo) {
+    public ResponseEntity<BalanceResponse> checkBalance(@RequestParam("accountNo") String accountNo) {
         return ResponseEntity.ok(ledgerService.checkBalance(accountNo));
     }
 
@@ -86,8 +86,8 @@ public class LedgerController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TransactionHistoryResponse>> transactionHistory(
             @RequestParam("accountNo") String accountNo,
-            @RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate) throws ParseException {
+            @ApiParam(value = "yyyy-MM-dd", required = false) @RequestParam("fromDate") String fromDate,
+            @ApiParam(value = "yyyy-MM-dd", required = false) @RequestParam("toDate") String toDate) throws ParseException {
         return ResponseEntity.ok(ledgerService.viewHistory(accountNo,fromDate,toDate));
     }
 

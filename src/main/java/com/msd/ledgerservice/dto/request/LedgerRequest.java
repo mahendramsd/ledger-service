@@ -12,8 +12,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class LedgerRequest implements Serializable {
 
-    private String creditAccount; // Customer Account
-    private String debitAccount; // Bank CashBook Account
+    private String customerAccount; // Customer Account
+    private String cashBookAccount; // Bank CashBook Account
     private BigDecimal amount;
     private String transactionNo;
     private String journalNo;
