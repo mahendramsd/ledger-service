@@ -13,6 +13,9 @@ For building and running the application you need:
 
 ## Running the application locally
 
+Database Configaration
+* add or change configarations acording to application.property file
+
 There are several ways to run a Spring Boot application on your local machine. One way is to execute the `main` method in the `com.msd.ledgerservice.LedgerServiceApplication` class from your IDE.
 
 Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) like so:
