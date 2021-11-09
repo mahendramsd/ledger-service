@@ -125,7 +125,7 @@ public class LedgerServiceImpl implements LedgerService {
      */
     public BigDecimal getBalance(String accountNo) {
         BigDecimal creditSum = BigDecimal.ZERO;
-        BigDecimal debitSum = BigDecimal.ZERO;;
+        BigDecimal debitSum = BigDecimal.ZERO;
          creditSum = ledgerRepository.findLedgerSum(accountNo,CreditDebitStatus.CREDIT,Status.ACTIVE);
          debitSum = ledgerRepository.findLedgerSum(accountNo,CreditDebitStatus.DEBIT,Status.ACTIVE);
         if (creditSum == null) {
